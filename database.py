@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
@@ -64,8 +64,8 @@ def create_tables():
 def get_db():
     db = SessionLocal()
     try:
-        # 测试连接
-        db.execute("SELECT 1")
+        # 测试连接，使用 text() 函数包装 SQL 语句
+        db.execute(text("SELECT 1"))
         yield db
     except Exception as e:
         print(f"Database connection error: {e}")
