@@ -109,13 +109,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('start-recording').addEventListener('click', startNoiseDetection);
 
-    // Form validation
+    // Form validation and submission
     const form = document.getElementById('survey-form');
     if (form) {
         form.addEventListener('submit', function(event) {
             if (!form.checkValidity()) {
                 event.preventDefault();
                 event.stopPropagation();
+            } else {
+                // Get location data
+                const locationText = document.getElementById('current-location').textContent;
+                let latitude = 0;
+                let longitude = 0;
+                if (locationText.includes('Latitude')) {
+                    const matches = locationText.match(/Latitude: ([\d.-]+)°, Longitude: ([\d.-]+)°/);
+                    if (matches) {
+                        latitude = matches[1];
+                        longitude = matches[2];
+                    }
+                }
+
+                // Get noise level data
+                const dbText = document.getElementById('db-value').textContent;
+                let noiseLevel = 0;
+                if (dbText.includes('Maximum noise level:')) {
+                    const match = dbText.match(/Maximum noise level: (\d+) dB/);
+                    if (match) {
+                        noiseLevel = match[1];
+                    }
+                }
+
+                // Create hidden fields for the data
+                const addHiddenField = (name, value) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = value;
+                    form.appendChild(input);
+                };
+
+                // Add all form data
+                addHiddenField('latitude', latitude);
+                addHiddenField('longitude', longitude);
+                addHiddenField('location_name', document.querySelector('select[name="location-area"]')?.value || '');
+                addHiddenField('noise_level', noiseLevel);
+                
+                // Combine all form data into result
+                const formData = new FormData(form);
+                const result = {};
+                for (let [key, value] of formData.entries()) {
+                    if (!['latitude', 'longitude', 'location_name', 'noise_level'].includes(key)) {
+                        result[key] = value;
+                    }
+                }
+                addHiddenField('result', JSON.stringify(result));
             }
             form.classList.add('was-validated');
         });
