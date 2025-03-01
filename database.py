@@ -1,14 +1,27 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 import os
 from datetime import datetime
+import time
 
-# 获取数据库URL（将从环境变量中读取）
+# 获取数据库URL
 DATABASE_URL = os.getenv('DATABASE_URL')
+if not DATABASE_URL:
+    raise ValueError("No DATABASE_URL environment variable set")
 
-# 创建数据库引擎
-engine = create_engine(DATABASE_URL)
+print(f"Initializing database connection... (URL ending with: ...{DATABASE_URL[-20:]})")
+
+# 创建数据库引擎，添加连接池配置
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=1800,
+    pool_pre_ping=True
+)
 
 # 创建会话工厂
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -22,17 +35,40 @@ class Survey(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
-    result = Column(String)
-    additional_info = Column(String, nullable=True)
+    latitude = Column(Float)  # 纬度
+    longitude = Column(Float)  # 经度
+    noise_level = Column(Float)  # 噪声强度 (dB)
+    location_name = Column(String)  # 位置名称
+    result = Column(String)  # 问卷结果
+    additional_info = Column(String, nullable=True)  # 额外信息
 
-# 创建数据库表
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    max_retries = 3
+    retry_delay = 2  # seconds
 
-# 获取数据库会话
+    for attempt in range(max_retries):
+        try:
+            print(f"Attempting to create tables (attempt {attempt + 1}/{max_retries})")
+            Base.metadata.create_all(bind=engine)
+            print("Tables created successfully!")
+            return
+        except OperationalError as e:
+            if attempt < max_retries - 1:
+                print(f"Database connection failed: {e}")
+                print(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+            else:
+                print("Failed to create tables after all attempts")
+                raise
+
 def get_db():
     db = SessionLocal()
     try:
+        # 测试连接
+        db.execute("SELECT 1")
         yield db
+    except Exception as e:
+        print(f"Database connection error: {e}")
+        raise
     finally:
         db.close() 

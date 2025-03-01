@@ -75,8 +75,12 @@ def submit_survey():
         
         with get_db_session() as db:
             survey = Survey(
-                result=data.get('result', ''),
-                additional_info=data.get('additional_info', '')
+                latitude=float(data.get('latitude', 0)),  # 从前端获取纬度
+                longitude=float(data.get('longitude', 0)),  # 从前端获取经度
+                noise_level=float(data.get('noise_level', 0)),  # 从前端获取噪声强度
+                location_name=data.get('location_name', ''),  # 从前端获取位置名称
+                result=data.get('result', ''),  # 问卷结果
+                additional_info=data.get('additional_info', '')  # 额外信息
             )
             db.add(survey)
             db.commit()
