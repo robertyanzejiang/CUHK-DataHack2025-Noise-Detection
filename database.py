@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, text
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
@@ -13,15 +13,8 @@ if not DATABASE_URL:
 
 print(f"Initializing database connection... (URL ending with: ...{DATABASE_URL[-20:]})")
 
-# 创建数据库引擎，添加连接池配置
-engine = create_engine(
-    DATABASE_URL,
-    pool_size=5,
-    max_overflow=10,
-    pool_timeout=30,
-    pool_recycle=1800,
-    pool_pre_ping=True
-)
+# 创建数据库引擎
+engine = create_engine(DATABASE_URL)
 
 # 创建会话工厂
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -35,10 +28,16 @@ class Survey(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    # 位置信息
     latitude = Column(Float)  # 纬度
     longitude = Column(Float)  # 经度
-    noise_level = Column(Float)  # 噪声强度 (dB)
     location_name = Column(String)  # 位置名称
+    
+    # 噪声数据
+    noise_level = Column(Float)  # 噪声强度 (dB)
+    
+    # 问卷信息
     result = Column(String)  # 问卷结果
     additional_info = Column(String, nullable=True)  # 额外信息
 
@@ -64,8 +63,8 @@ def create_tables():
 def get_db():
     db = SessionLocal()
     try:
-        # 测试连接，使用 text() 函数包装 SQL 语句
-        db.execute(text("SELECT 1"))
+        # 测试连接
+        db.execute("SELECT 1")
         yield db
     except Exception as e:
         print(f"Database connection error: {e}")
