@@ -1,0 +1,256 @@
+:root {
+    --cuhk-purple: #6B2C91;
+    --cuhk-gold: #C1A01E;
+    --cuhk-light-purple: #8d4ab3;
+    --cuhk-light-gold: #e3c351;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.card-header.bg-primary {
+    background-color: var(--cuhk-purple) !important;
+}
+
+.card-header.bg-danger {
+    background-color: var(--cuhk-purple) !important;
+}
+
+.btn-primary {
+    background-color: var(--cuhk-purple);
+    border-color: var(--cuhk-purple);
+}
+
+.btn-primary:hover {
+    background-color: var(--cuhk-light-purple);
+    border-color: var(--cuhk-light-purple);
+}
+
+.hazard-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.hazard-card:hover {
+    transform: translateY(-5px);
+}
+
+.hazard-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: var(--cuhk-purple);
+}
+
+.table-primary {
+    background-color: var(--cuhk-purple) !important;
+    color: white;
+}
+
+.progress-bar {
+    background-color: var(--cuhk-purple);
+}
+
+.info-box {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cuhk-logo {
+    max-height: 60px;
+    margin-bottom: 20px;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--cuhk-purple);
+    box-shadow: 0 0 0 0.25rem rgba(107, 44, 145, 0.25);
+}
+
+.table-bordered {
+    border-color: #dee2e6;
+}
+
+.noise-levels {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.info-box h5 {
+    color: #007bff;
+    margin-bottom: 0.5rem;
+}
+
+.noise-meter {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.progress {
+    height: 1.5rem;
+    border-radius: 1rem;
+    margin: 1rem 0;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-select, .form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+#db-value {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+.hazard-card h3 {
+    color: #2c3e50;
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.hazard-card ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.hazard-card li {
+    color: #505c6b;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.hazard-card li:before {
+    content: "•";
+    color: #007bff;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: #e3f2fd;
+    color: #2c3e50;
+}
+
+.recording-timer {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #dc3545;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.average-result {
+    background-color: #e3f2fd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Thank you page styles */
+.thank-you-content {
+    padding: 2rem;
+}
+
+.checkmark-circle {
+    width: 100px;
+    height: 100px;
+    background-color: var(--cuhk-purple);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.checkmark-circle i {
+    color: white !important;
+    font-size: 3rem !important;
+}
+
+.thank-you-content h2 {
+    color: var(--cuhk-purple);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.thank-you-content .lead {
+    color: #2c3e50;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+/* Responsive adjustments for thank you page */
+@media (max-width: 768px) {
+    .thank-you-content {
+        padding: 1rem;
+    }
+    
+    .thank-you-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .thank-you-content .lead {
+        font-size: 1rem;
+    }
+} 

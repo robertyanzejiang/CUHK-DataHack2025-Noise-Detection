@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noise Detection Application - CUHK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <img src="https://www.cuhk.edu.hk/english/images/cuhk_logo_2x.png" alt="CUHK Logo" class="cuhk-logo">
+        </div>
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h1 class="text-center">Noise Detection Application</h1>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <h5>Current Time</h5>
+                            <p id="current-time">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <h5>Current Location</h5>
+                            <p id="current-location">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="noise-meter mb-4">
+                    <h5>Current Environmental Noise Level (dB)</h5>
+                    <div class="progress">
+                        <div id="noise-level" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <p id="db-value">Waiting for microphone permission...</p>
+                    <button id="start-recording" class="btn btn-primary">Start Noise Detection</button>
+                </div>
+
+                <form id="survey-form" class="needs-validation" action="{{ url_for('submit_survey') }}" method="POST" novalidate>
+                    <h3 class="text-center mb-4">Noise Survey Questionnaire</h3>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Your Age:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="under18">Under 18</option>
+                            <option value="18-30">18-30</option>
+                            <option value="31-45">31-45</option>
+                            <option value="46-60">46-60</option>
+                            <option value="above60">Above 60</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Your Location Area:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="city-center">City Center</option>
+                            <option value="city-edge">City Outskirts</option>
+                            <option value="suburb">Suburban Area</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Your Environment:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="environment" value="indoor" required>
+                            <label class="form-check-label">Indoor</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="environment" value="outdoor">
+                            <label class="form-check-label">Outdoor</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Current Activity:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="home">At Home</option>
+                            <option value="work">Working/Studying</option>
+                            <option value="outdoor">Outdoors</option>
+                            <option value="transport">In Transit</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Perceived Noise Level:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="very-quiet">Very Quiet</option>
+                            <option value="quiet">Relatively Quiet</option>
+                            <option value="normal">Normal</option>
+                            <option value="noisy">Relatively Noisy</option>
+                            <option value="very-noisy">Very Noisy</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Main Source of Noise:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="traffic">Traffic Noise</option>
+                            <option value="construction">Construction Site</option>
+                            <option value="neighbors">Neighbor Activity</option>
+                            <option value="commercial">Commercial Activity</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Your Noise Tolerance Level:</label>
+                        <select class="form-select" required>
+                            <option value="">Please select</option>
+                            <option value="very-tolerant">Very Tolerant</option>
+                            <option value="tolerant">Somewhat Tolerant</option>
+                            <option value="neutral">Neutral</option>
+                            <option value="intolerant">Somewhat Intolerant</option>
+                            <option value="very-intolerant">Very Intolerant</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit Survey</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-3 text-muted">
+            <small>© The Chinese University of Hong Kong - Environmental Noise Research Initiative</small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html> 
