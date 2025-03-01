@@ -1,47 +1,77 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import datetime
+import os
+import sys
+import traceback
 from database import Survey, get_db, create_tables
 from contextlib import contextmanager
-import os
 
 app = Flask(__name__)
 
-# 打印环境变量（不包含敏感信息）
+# 配置 Flask
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['DEBUG'] = os.getenv('FLASK_DEBUG', '0') == '1'
+
+# 打印环境信息
+print("Python version:", sys.version)
 print("Environment variables loaded:", bool(os.getenv('DATABASE_URL')))
 print("Flask ENV:", os.getenv('FLASK_ENV'))
+print("Current working directory:", os.getcwd())
+print("Directory contents:", os.listdir())
 
 try:
     # 确保数据库表已创建
     create_tables()
     print("Database tables created successfully")
 except Exception as e:
-    print(f"Error creating tables: {e}")
+    print(f"Error creating tables: {str(e)}")
+    print("Traceback:", traceback.format_exc())
 
 @contextmanager
 def get_db_session():
     db = next(get_db())
     try:
         yield db
+    except Exception as e:
+        print(f"Database session error: {str(e)}")
+        print("Traceback:", traceback.format_exc())
+        raise
     finally:
         db.close()
 
 @app.route('/')
 def landing():
-    return render_template('landing.html')
+    try:
+        return render_template('landing.html')
+    except Exception as e:
+        print(f"Error in landing route: {str(e)}")
+        print("Traceback:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/detect')
 def detect():
-    return render_template('index.html')
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        print(f"Error in detect route: {str(e)}")
+        print("Traceback:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/get_time')
 def get_time():
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return jsonify({"time": current_time})
+    try:
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return jsonify({"time": current_time})
+    except Exception as e:
+        print(f"Error in get_time route: {str(e)}")
+        print("Traceback:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/submit_survey', methods=['POST'])
 def submit_survey():
     try:
         data = request.form.to_dict()
+        print(f"Received survey data: {data}")
         
         with get_db_session() as db:
             survey = Survey(
@@ -50,22 +80,40 @@ def submit_survey():
             )
             db.add(survey)
             db.commit()
+            print("Survey data saved successfully")
         
         return redirect(url_for('thank_you'))
     except Exception as e:
-        print(f"Error in submit_survey: {e}")
+        print(f"Error in submit_survey: {str(e)}")
+        print("Traceback:", traceback.format_exc())
         return jsonify({"error": str(e)}), 500
 
 @app.route('/thank_you')
 def thank_you():
-    return render_template('thank_you.html')
+    try:
+        return render_template('thank_you.html')
+    except Exception as e:
+        print(f"Error in thank_you route: {str(e)}")
+        print("Traceback:", traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @app.errorhandler(500)
 def handle_500(error):
+    print(f"500 error occurred: {str(error)}")
+    print("Traceback:", traceback.format_exc())
     return jsonify({
         "error": "Internal Server Error",
-        "message": str(error)
+        "message": str(error),
+        "traceback": traceback.format_exc()
     }), 500
+
+@app.errorhandler(404)
+def handle_404(error):
+    print(f"404 error occurred: {str(error)}")
+    return jsonify({
+        "error": "Not Found",
+        "message": str(error)
+    }), 404
 
 if __name__ == '__main__':
     app.run(debug=True) 
